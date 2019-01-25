@@ -16,6 +16,10 @@ if !exists('g:AutoPairs')
   let g:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`'}
 end
 
+if !exists('g:AutoPairsSkipCharacter')
+  let g:AutoPairsSkipCharacter = 1
+endif
+
 if !exists('g:AutoPairsParens')
   let g:AutoPairsParens = {'(':')', '[':']', '{':'}'}
 end
@@ -124,6 +128,9 @@ function! AutoPairsInsert(key)
   if !has_key(b:AutoPairs, a:key)
     let b:autopairs_saved_pair = [a:key, getpos('.')]
 
+    if g:AutoPairsSkipCharacter == 0
+        return a:key.s:Right
+    endif
     " Skip the character if current character is the same as input
     if current_char == a:key
       return s:Right
@@ -169,7 +176,7 @@ function! AutoPairsInsert(key)
   let open = a:key
   let close = b:AutoPairs[open]
 
-  if current_char == close && open == close
+  if current_char == close && open == close && g:AutoPairsSkipCharacter
     return s:Right
   end
 
